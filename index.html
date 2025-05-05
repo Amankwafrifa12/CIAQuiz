@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <!-- Responsive Meta Tag -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Primary Meta Tags -->
+    <title>CIAQuiz | GenieDev</title>
+    <meta name="title" content="CIAQuiz App | GenieDev">
+    <meta name="description"
+        content="Take the CIAQuiz App by GenieDev and test your knowledge on PnP topics. Learn, challenge yourself, and have fun with interactive questions.">
+    <meta name="keywords" content="PnP, Quiz, GenieLab, Education, CIAQuiz, interactive quiz">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://genielab.rf.gd">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://genielab.rf.gd">
+    <meta property="og:title" content="CIAQuiz App | GenieLab">
+    <meta property="og:description" content="Take the CIAQuiz App by GenieDev and test your knowledge on PnP topics.">
+    <meta property="og:image" content="https://genielab.rf.gd/images/assets/4.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://genielab.rf.gd">
+    <meta property="twitter:title" content="CIAQuiz App | GenieLab">
+    <meta property="twitter:description"
+        content="Take the CIAQuiz App by GenieDev and test your knowledge on PnP topics.">
+    <meta property="twitter:image" content="https://genielab.rf.gd/images/assets/4.jpg">
+
+    <style>
+        /* Mobile-first styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f2f2f2;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Popup overlay styles */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .popup {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .subscribe-btn {
+            background-color: #ff0000;
+            color: #fff;
+        }
+
+        .start-btn {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        #next-btn {
+            display: none;
+            /* Initially hidden */
+            padding: 12px 24px;
+            font-size: 16px;
+            background-color: #28a745;
+            /* Green background */
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        #prev-btn {
+            display: none;
+            /* Initially hidden */
+            padding: 12px 24px;
+            font-size: 16px;
+            background-color: #4f4f4f;
+            /* Green background */
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        #next-btn:hover {
+            background-color: #218838;
+            /* Darker green on hover */
+        }
+
+        .option-btn {
+            width: 100%;
+            margin: 10px 0;
+            background-color: #007bff;
+            color: #fff;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .correct {
+            color: green;
+            font-weight: bold;
+        }
+
+        .wrong {
+            color: red;
+            font-weight: bold;
+        }
+
+        /* Larger screens */
+        @media (min-width: 768px) {
+            .container {
+                margin: 40px auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Popup with two buttons and contact info -->
+    <div class="popup-overlay" id="popup-overlay">
+        <div class="popup">
+            <h1>CIAQuiz - GenieDev</h1>
+            <p>Please support us by subscribing to our channel for more of this</p>
+            <div>
+                <button class="subscribe-btn" id="subscribe-btn">Subscribe</button>
+                <button class="start-btn" id="start-btn">Start Quiz</button>
+            </div>
+            <p>Contact us: +233592725542 | Email: genielabgh@gmail.com</p>
+        </div>
+    </div>
+
+    <!-- Main quiz container -->
+    <div class="container" id="quiz-container" style="display: none;">
+        <div id="welcome" style="text-align: center;">
+            <h2>CIAQuiz - GenieDev</h2>
+        </div>
+        <div id="quiz">
+            <div id="question-container">
+                <div class="button" style="display: flex; justify-content: space-between;">
+                    <h4 id="question-number"></h4>
+                    <button id="restart-btn" style="background-color: #333; color: #f2f2f2;">Restart</button>
+                </div>
+
+                <h3 id="question-text"></h3>
+                <div id="options-container"></div>
+
+                <!-- Replace the original two button declarations with this container -->
+                <div id="nav-buttons"
+                    style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 20px;">
+                    <button id="prev-btn" style="display: none;">Previous</button>
+                    <button id="next-btn">Next</button>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="feedback"></div>
+        <div id="score-container" style="margin-top: 20px;">
+            Score: <span id="score">0</span>/<span id="total">0</span>
+        </div>
+    </div>
+    </div>
+
+    <script>
+        // Sample quiz data extracted from the PDF.
+        // (You can use an external JSON file and fetch it if needed.)
+        let questions = [
+
+
+            {
+                "question": "What is the primary focus of psychological foundations in curriculum development?",
+                "options": [
+                    "Political ideologies",
+                    "Learner’s mental and emotional development",
+                    "Economic trends",
+                    "Cultural beliefs"
+                ],
+                "answer": "Learner’s mental and emotional development"
+            },
+            {
+                "question": "Which of the following best defines the concept of curriculum?",
+                "options": [
+                    "A list of school rules",
+                    "An organised set of learning experiences",
+                    "A school timetable",
+                    "A national budget"
+                ],
+                "answer": "An organised set of learning experiences"
+            },
+            {
+                "question": "Which psychologist’s theory is most linked to developmental stages influencing curriculum?",
+                "options": [
+                    "B.F. Skinner",
+                    "Jean Piaget",
+                    "Sigmund Freud",
+                    "Ivan Pavlov"
+                ],
+                "answer": "Jean Piaget"
+            },
+            {
+                "question": "How does motivation affect learning in curriculum design?",
+                "options": [
+                    "It reduces the need for content",
+                    "It increases interest and performance",
+                    "It causes distractions",
+                    "It replaces teacher input"
+                ],
+                "answer": "It increases interest and performance"
+            },
+            {
+                "question": "Which of the following is NOT a psychological factor affecting curriculum?",
+                "options": [
+                    "Maturity",
+                    "Interest",
+                    "Learning style",
+                    "Religion"
+                ],
+                "answer": "Religion"
+            },
+            {
+                "question": "What is one key purpose of studying the philosophical foundations of Art Education?",
+                "options": [
+                    "To prepare for law school",
+                    "To understand art history only",
+                    "To develop a broad outlook on art teaching",
+                    "To learn different painting techniques"
+                ],
+                "answer": "To develop a broad outlook on art teaching"
+            },
+            {
+                "question": "What is Ghana’s National Philosophy of Art Education based on?",
+                "options": [
+                    "Foreign culture and aesthetics",
+                    "Technological advancements",
+                    "Development of national identity through creativity",
+                    "Economic gains from art sales"
+                ],
+                "answer": "Development of national identity through creativity"
+            },
+            {
+                "question": "Why is Art Education important in Ghana's curriculum?",
+                "options": [
+                    "To help students memorise historical facts",
+                    "To provide entertainment",
+                    "To foster creativity and critical thinking",
+                    "To promote sports"
+                ],
+                "answer": "To foster creativity and critical thinking"
+            },
+            {
+                "question": "Which of the following is a core value of Ghana's Art Education philosophy?",
+                "options": [
+                    "Conformity",
+                    "Originality and self-expression",
+                    "Foreign techniques",
+                    "Scientific research"
+                ],
+                "answer": "Originality and self-expression"
+            },
+            {
+                "question": "Art Education contributes to national development by:",
+                "options": [
+                    "Replacing all other subjects",
+                    "Focusing on Western art alone",
+                    "Helping students pass exams only",
+                    "Promoting local culture and skills"
+                ],
+                "answer": "Promoting local culture and skills"
+            },
+            {
+                "question": "The 'platform' in curriculum planning refers to:",
+                "options": [
+                    "The physical classroom",
+                    "The stage used in drama",
+                    "A statement of intent or belief",
+                    "The school compound"
+                ],
+                "answer": "A statement of intent or belief"
+            },
+            {
+                "question": "Deliberations in curriculum development are important because they:",
+                "options": [
+                    "Ignore teacher input",
+                    "Include only politicians",
+                    "Ensure multiple perspectives are considered",
+                    "Are based on trial and error"
+                ],
+                "answer": "Ensure multiple perspectives are considered"
+            },
+            {
+                "question": "Which method is commonly used in teaching art?",
+                "options": [
+                    "Lecture only",
+                    "Drill and practice",
+                    "Demonstration",
+                    "Dictation"
+                ],
+                "answer": "Demonstration"
+            },
+            {
+                "question": "Who plays a key role in deciding the curriculum content?",
+                "options": [
+                    "Only the President",
+                    "Curriculum experts, teachers, and stakeholders",
+                    "Foreign donors",
+                    "Only textbook writers"
+                ],
+                "answer": "Curriculum experts, teachers, and stakeholders"
+            },
+            {
+                "question": "Which of these is a factor that leads to curriculum change?",
+                "options": [
+                    "Student age",
+                    "Cultural shifts",
+                    "Teacher preferences",
+                    "Class size"
+                ],
+                "answer": "Cultural shifts"
+            },
+            {
+                "question": "Evaluation in the art curriculum is primarily done to:",
+                "options": [
+                    "Punish students",
+                    "Promote teachers",
+                    "Determine effectiveness of teaching and learning",
+                    "Choose art materials"
+                ],
+                "answer": "Determine effectiveness of teaching and learning"
+            },
+            {
+                "question": "A major influence on curriculum change is:",
+                "options": [
+                    "Uniform design",
+                    "Political stability",
+                    "Social needs and technological advancements",
+                    "Religious activities"
+                ],
+                "answer": "Social needs and technological advancements"
+            },
+            {
+                "question": "Curriculum evaluation helps in:",
+                "options": [
+                    "Stopping art classes",
+                    "Choosing classroom colours",
+                    "Improving teaching methods",
+                    "Constructing new buildings"
+                ],
+                "answer": "Improving teaching methods"
+            },
+            {
+                "question": "Which model is NOT a curriculum development model?",
+                "options": [
+                    "Taba model",
+                    "Tyler model",
+                    "Dick and Carey model",
+                    "Photosynthesis model"
+                ],
+                "answer": "Photosynthesis model"
+            },
+            {
+                "question": "What is one aim of selecting and organising content in the curriculum?",
+                "options": [
+                    "To confuse students",
+                    "To repeat information",
+                    "To enhance learning progression",
+                    "To focus only on tests"
+                ],
+                "answer": "To enhance learning progression"
+            },
+            {
+                "question": "Content selection should consider:",
+                "options": [
+                    "Students’ religious background",
+                    "Market prices",
+                    "Relevance to learners’ needs",
+                    "Only teacher interest"
+                ],
+                "answer": "Relevance to learners’ needs"
+            },
+            {
+                "question": "Learning experiences are selected to:",
+                "options": [
+                    "Fill the timetable",
+                    "Meet instructional objectives",
+                    "Entertain students",
+                    "Reduce syllabus content"
+                ],
+                "answer": "Meet instructional objectives"
+            },
+            {
+                "question": "A good learning experience should be:",
+                "options": [
+                    "Complicated and abstract",
+                    "Isolated from real life",
+                    "Relevant and engaging",
+                    "Repetitive and long"
+                ],
+                "answer": "Relevant and engaging"
+            },
+            {
+                "question": "Evaluation is essential in curriculum because it:",
+                "options": [
+                    "Replaces the teacher",
+                    "Improves future planning",
+                    "Stops students from failing",
+                    "Increases school fees"
+                ],
+                "answer": "Improves future planning"
+            },
+            {
+                "question": "Which of the following is NOT a method of evaluating curriculum?",
+                "options": [
+                    "Formative",
+                    "Summative",
+                    "Diagnostic",
+                    "Persuasive"
+                ],
+                "answer": "Persuasive"
+            },
+            {
+                "question": "Curriculum evaluation includes assessing:",
+                "options": [
+                    "Textbook prices",
+                    "Student hairstyles",
+                    "Achievement of objectives",
+                    "Uniform colours"
+                ],
+                "answer": "Achievement of objectives"
+            },
+            {
+                "question": "An effective curriculum critique involves:",
+                "options": [
+                    "Personal bias",
+                    "No reference to context",
+                    "Systematic examination of relevance and outcomes",
+                    "Guesswork"
+                ],
+                "answer": "Systematic examination of relevance and outcomes"
+            },
+            {
+                "question": "Which is a characteristic of a good curriculum?",
+                "options": [
+                    "Rigid and unchanging",
+                    "Designed without stakeholders",
+                    "Relevant to societal needs",
+                    "Filled with only theory"
+                ],
+                "answer": "Relevant to societal needs"
+            },
+            {
+                "question": "A curriculum critique seeks to:",
+                "options": [
+                    "Praise curriculum designers",
+                    "Avoid feedback",
+                    "Identify strengths and weaknesses",
+                    "Justify high expenses"
+                ],
+                "answer": "Identify strengths and weaknesses"
+            },
+            {
+                "question": "Who should participate in curriculum evaluation?",
+                "options": [
+                    "Only students",
+                    "All stakeholders including teachers and curriculum experts",
+                    "Only parents",
+                    "Government ministers only"
+                ],
+                "answer": "All stakeholders including teachers and curriculum experts"
+            },
+            {
+                "question": "Curriculum planning starts with:",
+                "options": [
+                    "Assessment",
+                    "Platform or intent",
+                    "Evaluation",
+                    "Teaching"
+                ],
+                "answer": "Platform or intent"
+            },
+            {
+                "question": "Which of these is NOT a purpose of the curriculum?",
+                "options": [
+                    "To structure learning",
+                    "To identify what to teach",
+                    "To eliminate creativity",
+                    "To set educational goals"
+                ],
+                "answer": "To eliminate creativity"
+            },
+            {
+                "question": "The Tyler model is based on:",
+                "options": [
+                    "Four fundamental questions",
+                    "Two political theories",
+                    "Cultural assumptions",
+                    "Government policies"
+                ],
+                "answer": "Four fundamental questions"
+            },
+            {
+                "question": "What does the Taba model emphasise?",
+                "options": [
+                    "Teacher as the main curriculum developer",
+                    "Government monopoly",
+                    "Student-created syllabus",
+                    "Exams only"
+                ],
+                "answer": "Teacher as the main curriculum developer"
+            },
+            {
+                "question": "Which model advocates backward design?",
+                "options": [
+                    "Understanding by Design (UbD)",
+                    "Dick and Carey",
+                    "Taba",
+                    "Pavlovian"
+                ],
+                "answer": "Understanding by Design (UbD)"
+            },
+            {
+                "question": "Which of the following is considered during curriculum critique?",
+                "options": [
+                    "Fashion trends",
+                    "Quality of content, delivery, and outcomes",
+                    "Internet speed",
+                    "Teacher salary"
+                ],
+                "answer": "Quality of content, delivery, and outcomes"
+            },
+            {
+                "question": "Art curriculum evaluation helps identify:",
+                "options": [
+                    "Student discipline issues",
+                    "Art material sources",
+                    "Strengths and weaknesses in learning outcomes",
+                    "Teacher preferences"
+                ],
+                "answer": "Strengths and weaknesses in learning outcomes"
+            }
+
+
+        ];
+
+
+
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const totalQuestions = questions.length;
+
+        // DOM Elements
+        const popupOverlay = document.getElementById("popup-overlay");
+        const subscribeBtn = document.getElementById("subscribe-btn");
+        const startBtn = document.getElementById("start-btn");
+        const quizContainer = document.getElementById("quiz-container");
+        const questionNumberEl = document.getElementById("question-number");
+        const questionText = document.getElementById("question-text");
+        const optionsContainer = document.getElementById("options-container");
+        const feedbackDiv = document.getElementById("feedback");
+        const scoreSpan = document.getElementById("score");
+        const totalSpan = document.getElementById("total");
+        const userNameSpan = document.getElementById("user-name");
+        const nextBtn = document.getElementById("next-btn");
+        const prevBtn = document.getElementById("prev-btn");
+        const restartBtn = document.getElementById("restart-btn");
+
+        // Utility: Shuffle an array using Fisher–Yates algorithm.
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Subscribe button: open YouTube channel in new tab.
+        subscribeBtn.addEventListener("click", function (event) {
+            event.preventDefault();
+            window.open("https://youtube.com/@genielabgh", "_blank");
+        });
+
+        // Start Quiz button: prompt for user name (if not saved), then start quiz.
+        startBtn.addEventListener("click", function (event) {
+            event.preventDefault();
+            popupOverlay.style.display = "none";
+            quizContainer.style.display = "block";
+            totalSpan.textContent = totalQuestions;
+            showQuestion();
+        });
+
+        // Next button: increment question index and show next question.
+        nextBtn.addEventListener("click", function () {
+            if (currentQuestionIndex < totalQuestions - 1) {
+                currentQuestionIndex++;
+                localStorage.setItem("currentQuestionIndex", currentQuestionIndex);
+                showQuestion();
+            }
+        });
+
+        // Previous button: decrement question index and show previous question.
+        prevBtn.addEventListener("click", function () {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                localStorage.setItem("currentQuestionIndex", currentQuestionIndex);
+                showQuestion();
+            }
+        });
+
+        // Restart button: clear progress and reload the page.
+        restartBtn.addEventListener("click", function () {
+            localStorage.clear();
+            location.reload();
+        });
+        // Show the current question and options.
+        function showQuestion() {
+            feedbackDiv.textContent = "";
+            // Always show the Next button.
+            nextBtn.style.display = "block";
+            // Hide the Previous button on the first question.
+            if (currentQuestionIndex === 0) {
+                prevBtn.style.display = "none";
+            } else {
+                prevBtn.style.display = "block";
+            }
+
+            if (currentQuestionIndex < totalQuestions) {
+                questionNumberEl.textContent = "Question: " + (currentQuestionIndex + 1);
+                const currentQuestion = questions[currentQuestionIndex];
+                questionText.textContent = currentQuestion.question;
+                optionsContainer.innerHTML = "";
+                // Shuffle options on every page refresh / question display.
+                const shuffledOptions = shuffleArray(currentQuestion.options.slice());
+                const savedAnswer = localStorage.getItem("answered_" + currentQuestionIndex);
+                shuffledOptions.forEach(option => {
+                    const button = document.createElement("button");
+                    button.textContent = option;
+                    button.classList.add("option-btn");
+                    if (savedAnswer !== null) {
+                        // If already answered, disable the button and mark coloring.
+                        button.disabled = true;
+                        if (option === currentQuestion.answer) {
+                            button.style.backgroundColor = "green";
+                        }
+                        if (option === savedAnswer && savedAnswer !== currentQuestion.answer) {
+                            button.style.backgroundColor = "red";
+                        }
+                    } else {
+                        button.addEventListener("click", function (e) {
+                            checkAnswer(option, e.target);
+                        });
+                    }
+                    optionsContainer.appendChild(button);
+                });
+                if (savedAnswer !== null) {
+                    if (savedAnswer === currentQuestion.answer) {
+                        feedbackDiv.innerHTML = "<p class='correct'>Correct!</p>";
+                    } else {
+                        feedbackDiv.innerHTML = "<p class='wrong'>Wrong!</p>";
+                    }
+                }
+            } else {
+                showResult();
+            }
+        }
+
+
+
+        // Check the selected answer, update the score, and provide feedback.
+        function checkAnswer(selected, selectedButton) {
+            const currentQuestion = questions[currentQuestionIndex];
+            const buttons = document.querySelectorAll(".option-btn");
+            buttons.forEach(btn => btn.disabled = true);
+            if (selected !== currentQuestion.answer) {
+                selectedButton.style.backgroundColor = "red";
+                feedbackDiv.innerHTML = "<p class='wrong'>Wrong!</p>";
+            } else {
+                feedbackDiv.innerHTML = "<p class='correct'>Correct!</p>";
+                score++;
+            }
+            buttons.forEach(btn => {
+                if (btn.textContent === currentQuestion.answer) {
+                    btn.style.backgroundColor = "green";
+                }
+            });
+            scoreSpan.textContent = score;
+            localStorage.setItem("score", score);
+            localStorage.setItem("answered_" + currentQuestionIndex, selected);
+
+            // If the last question is answered, show final results; otherwise, show Next button.
+            if (currentQuestionIndex === totalQuestions - 1) {
+                showResult();
+            } else {
+                nextBtn.style.display = "block";
+            }
+        }
+
+        // Show final result after all questions are answered.
+        function showResult() {
+            optionsContainer.innerHTML = "";
+            questionNumberEl.textContent = "";
+            questionText.textContent = "Quiz Completed!";
+            // Display final score and percentage.
+            feedbackDiv.innerHTML = `<p><strong>Your final score is:</strong> ${score} out of ${totalQuestions}</p>`;
+            let percentage = (score / totalQuestions) * 100;
+            if (percentage >= 50) {
+                feedbackDiv.innerHTML += "<p style='color: green; font-size: 24px;'>&#10004; Passed</p>";
+            } else {
+                feedbackDiv.innerHTML += "<p style='color: red; font-size: 24px;'>&#10006; Failed</p>";
+            }
+            nextBtn.style.display = "none";
+            document.getElementById("score-container").style.display = "none";
+        }
+
+
+        // On page load, resume progress if available.
+        document.addEventListener("DOMContentLoaded", function () {
+            const savedIndex = localStorage.getItem("currentQuestionIndex");
+            const savedScore = localStorage.getItem("score");
+            const savedName = localStorage.getItem("userName");
+            if (savedIndex !== null) {
+                currentQuestionIndex = parseInt(savedIndex, 10);
+                score = savedScore ? parseInt(savedScore, 10) : 0;
+                scoreSpan.textContent = score;
+                if (savedName) {
+                    userNameSpan.textContent = savedName;
+                }
+                popupOverlay.style.display = "none";
+                quizContainer.style.display = "block";
+                totalSpan.textContent = totalQuestions;
+                showQuestion();
+            }
+        });
+    </script>
+</body>
+
+</html>
